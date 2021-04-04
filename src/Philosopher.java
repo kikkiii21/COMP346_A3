@@ -2,7 +2,7 @@ import common.BaseThread;
 
 /**
  * Class Philosopher.
- * Outlines main subrutines of our virtual philosopher.
+ * Outlines main subroutines of our virtual philosopher.
  *
  * @author Serguei A. Mokhov, mokhov@cs.concordia.ca
  */
@@ -26,8 +26,12 @@ public class Philosopher extends BaseThread
 		try
 		{
 			// ...
+			System.out.println(getTID() + " has started eating.");
+			Thread.yield();
 			sleep((long)(Math.random() * TIME_TO_WASTE));
 			// ...
+			System.out.println(getTID() + " has finished eating.");
+			Thread.yield();
 		}
 		catch(InterruptedException e)
 		{
@@ -48,6 +52,22 @@ public class Philosopher extends BaseThread
 	public void think()
 	{
 		// ...
+		try
+		{
+			// ...
+			System.out.println(getTID() + " has started thinking.");
+			Thread.yield();
+			sleep((long)(Math.random() * TIME_TO_WASTE));
+			// ...
+			System.out.println(getTID() + " has finished thinking.");
+			Thread.yield();
+		}
+		catch(InterruptedException e)
+		{
+			System.err.println("Philosopher.think():");
+			DiningPhilosophers.reportException(e);
+			System.exit(1);
+		}
 	}
 
 	/**
@@ -61,9 +81,11 @@ public class Philosopher extends BaseThread
 	public void talk()
 	{
 		// ...
-
+		System.out.println(getTID() + " has started talking.");
+		Thread.yield();
 		saySomething();
-
+		System.out.println(getTID() + " has finished talking.");
+		Thread.yield();
 		// ...
 	}
 
@@ -94,7 +116,7 @@ public class Philosopher extends BaseThread
 				// ...
 			}
 
-			yield();
+			Thread.yield();
 		}
 	} // run()
 

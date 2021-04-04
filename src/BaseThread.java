@@ -165,7 +165,7 @@ public class BaseThread extends Thread
 	}
 
 	/**
-	 * Allows setting arbitratu turn value. Should be set only before
+	 * Allows setting arbitrary turn value. Should be set only before
 	 * the threads are started
 	 */
 	public static void setInitialTurn(int piTurn)
@@ -190,7 +190,7 @@ public class BaseThread extends Thread
 	}
 
 	/**
-	 * Calls yield() several (4-40, pseudorandomly) times.
+	 * Calls yield() several (4-40, pseudo-randomly) times.
 	 * Next to useless, but helps to mix up the execution of phases.
 	 * Must NOT be atomic.
 	 */
@@ -200,7 +200,7 @@ public class BaseThread extends Thread
 		int iNumYields = (int)((new Random()).nextFloat() * 35) + 5;
 
 		for(int i = 0; i < iNumYields; i++)
-			yield();
+			Thread.yield();
 	}
 }
 
