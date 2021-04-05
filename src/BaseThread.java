@@ -1,4 +1,4 @@
-package common;
+//package common;
 
 import java.util.Random;
 
@@ -165,7 +165,7 @@ public class BaseThread extends Thread
 	}
 
 	/**
-	 * Allows setting arbitratu turn value. Should be set only before
+	 * Allows setting arbitrarily turn value. Should be set only before
 	 * the threads are started
 	 */
 	public static void setInitialTurn(int piTurn)
@@ -200,7 +200,7 @@ public class BaseThread extends Thread
 		int iNumYields = (int)((new Random()).nextFloat() * 35) + 5;
 
 		for(int i = 0; i < iNumYields; i++)
-			yield();
+			Thread.yield();
 	}
 }
 

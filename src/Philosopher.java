@@ -1,8 +1,8 @@
-import common.BaseThread;
+//import common.BaseThread;
 
 /**
  * Class Philosopher.
- * Outlines main subrutines of our virtual philosopher.
+ * Outlines main subroutines of our virtual philosopher.
  *
  * @author Serguei A. Mokhov, mokhov@cs.concordia.ca
  */
@@ -26,8 +26,15 @@ public class Philosopher extends BaseThread
 		try
 		{
 			// ...
+			//philosopher (TID) has started eating
+			System.out.println("Philosopher #"+getTID()+" has started eating");
+			Thread.yield();
 			sleep((long)(Math.random() * TIME_TO_WASTE));
 			// ...
+			//yield
+			Thread.yield();
+			//done eating
+			System.out.println("Philosopher #"+ getTID()+" has finished eating");
 		}
 		catch(InterruptedException e)
 		{
@@ -48,6 +55,18 @@ public class Philosopher extends BaseThread
 	public void think()
 	{
 		// ...
+		try{
+		System.out.println("Philosopher #"+getTID()+" has started thinking");
+		Thread.yield();
+		sleep((long)(Math.random() * TIME_TO_WASTE));
+		Thread.yield();
+		System.out.println("Philosopher #"+getTID()+" has finished thinking");
+		}catch(InterruptedException e){
+			System.err.println("Philosopher.think():");
+			DiningPhilosophers.reportException(e);
+			System.exit(1);
+		}
+
 	}
 
 	/**
@@ -61,8 +80,11 @@ public class Philosopher extends BaseThread
 	public void talk()
 	{
 		// ...
-
+		System.out.println("Philosopher #"+getTID()+" has started talking");
+		Thread.yield();
 		saySomething();
+		Thread.yield();
+		System.out.println("Philosopher #"+getTID()+" is done talking");
 
 		// ...
 	}
@@ -87,14 +109,21 @@ public class Philosopher extends BaseThread
 			 * A decision is made at random whether this particular
 			 * philosopher is about to say something terribly useful.
 			 */
-			if(true == false)
+
+			// The decision is randomly made by choosing at random either True or False
+			Boolean[] randomValue = {true,false};
+			Boolean willTalk = randomValue[(int)(Math.random() * randomValue.length)];
+			if(willTalk)
 			{
 				// Some monitor ops down here...
+				// Checks if another philosopher is talking; if not will talk() otherwise will wait
+				DiningPhilosophers.soMonitor.requestTalk();
 				talk();
 				// ...
+				//releases the monitor once finished talking
+				DiningPhilosophers.soMonitor.endTalk();
 			}
-
-			yield();
+			Thread.yield();
 		}
 	} // run()
 
@@ -110,7 +139,8 @@ public class Philosopher extends BaseThread
 			"You know, true is false and false is true if you think of it",
 			"2 + 2 = 5 for extremely large values of 2...",
 			"If thee cannot speak, thee must be silent",
-			"My number is " + getTID() + ""
+			"My number is " + getTID() + "",
+			"ARTHUUUUUUUUUUUUUR"
 		};
 
 		System.out.println

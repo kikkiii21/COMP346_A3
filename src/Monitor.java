@@ -37,7 +37,7 @@ public class Monitor
 	}
 
 	/**
-	 * When a given philosopher's done eating, they put the chopstiks/forks down
+	 * When a given philosopher's done eating, they put the chopsticks/forks down
 	 * and let others know they are available.
 	 */
 	public synchronized void putDown(final int piTID)
@@ -46,7 +46,7 @@ public class Monitor
 	}
 
 	/**
-	 * Only one philopher at a time is allowed to philosophy
+	 * Only one philosopher at a time is allowed to philosophy
 	 * (while she is not eating).
 	 */
 	public synchronized void requestTalk()

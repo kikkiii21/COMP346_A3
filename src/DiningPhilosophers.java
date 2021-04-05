@@ -1,3 +1,4 @@
+import java.util.Scanner;
 /**
  * Class DiningPhilosophers
  * The main starter.
@@ -39,6 +40,7 @@ public class DiningPhilosophers
 	 */
 	public static void main(String[] argv)
 	{
+		int iPhilosophers=0;
 		try
 		{
 			/*
@@ -46,13 +48,22 @@ public class DiningPhilosophers
 			 * Should be settable from the command line
 			 * or the default if no arguments supplied.
 			 */
-			int iPhilosophers = DEFAULT_NUMBER_OF_PHILOSOPHERS;
+			Scanner scanner = new Scanner(System.in);
+			System.out.println("Enter the number of Philosophers: ");
+			String input = scanner.next();
+			int numPhilo = Integer.parseInt(input);
+			if(numPhilo<0)
+				System.out.println("negative number");
+			else if(numPhilo>0)
+				iPhilosophers = numPhilo;
+				else
+					iPhilosophers = DEFAULT_NUMBER_OF_PHILOSOPHERS;
 
 			// Make the monitor aware of how many philosophers there are
 			soMonitor = new Monitor(iPhilosophers);
 
 			// Space for all the philosophers
-			Philosopher aoPhilosophers[] = new Philosopher[iPhilosophers];
+			Philosopher[] aoPhilosophers = new Philosopher[iPhilosophers];
 
 			// Let 'em sit down
 			for(int j = 0; j < iPhilosophers; j++)
