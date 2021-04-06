@@ -1,3 +1,8 @@
+import java.util.Arrays;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * Class Monitor
  * To synchronize dining philosophers.
@@ -11,7 +16,16 @@ public class Monitor
 	 * Data members
 	 * ------------
 	 */
+	//attributes
+	enum States{EATING,THINKING,HANGRY};
+	States[] state;
+	Boolean someoneTalking =false;
+	int numOfPhilosopher=0;
 
+	//conditions
+//	Lock lock = new ReentrantLock();
+//	Condition[] self;
+	//methods, see below
 
 	/**
 	 * Constructor
@@ -19,6 +33,20 @@ public class Monitor
 	public Monitor(int piNumberOfPhilosophers)
 	{
 		// TODO: set appropriate number of chopsticks based on the # of philosophers
+		// same amount of chopsticks as philosophers
+
+		state = new States[piNumberOfPhilosophers];
+		//self = new Condition[piNumberOfPhilosophers];
+		numOfPhilosopher = piNumberOfPhilosophers;
+		//initialize chopsticks to true as they are all available at the start of dinner
+		for(int i =0;i<piNumberOfPhilosophers;i++){
+			state[i] = States.THINKING;
+			//self[i] =lock.newCondition();
+		}
+
+		System.out.println(Arrays.toString(state));
+		//System.out.println(Arrays.toString(self));
+
 	}
 
 	/*
@@ -34,6 +62,18 @@ public class Monitor
 	public synchronized void pickUp(final int piTID)
 	{
 		// ...
+		//separate picking up of the chopsticks based on even/odd philosopher? For example even philo picks
+		// up the left chopstick first and then the right and vice versa for the odd philo
+
+		int id = piTID-1;
+		state[id] = States.HANGRY;
+		testChopsticks(piTID);
+		try {
+			if (state[id] != States.EATING) wait();
+		}catch(InterruptedException e){
+			System.err.println("Philosopher Pickup error");
+			DiningPhilosophers.reportException(e);
+		}
 	}
 
 	/**
@@ -43,6 +83,11 @@ public class Monitor
 	public synchronized void putDown(final int piTID)
 	{
 		// ...
+		int id = piTID-1;
+		state[id] = States.THINKING;
+		testChopsticks((id+(numOfPhilosopher-1)) % numOfPhilosopher);
+		testChopsticks(id+1 % numOfPhilosopher);
+
 	}
 
 	/**
@@ -52,6 +97,15 @@ public class Monitor
 	public synchronized void requestTalk()
 	{
 		// ...
+//		while(someoneTalking) {
+//			try {
+//					this.wait();
+//			} catch (InterruptedException e) {
+//				System.err.println("Someone talking error");
+//				DiningPhilosophers.reportException(e);
+//			}
+//		}
+//		someoneTalking =true;
 	}
 
 	/**
@@ -61,7 +115,25 @@ public class Monitor
 	public synchronized void endTalk()
 	{
 		// ...
+//		someoneTalking = false;
+//		this.notifyAll();
 	}
+
+	public synchronized void testChopsticks(int piTID){
+
+		int id = piTID-1;
+		if( state[ ((id-1+numOfPhilosopher) % numOfPhilosopher)] != States.EATING && state[((id+1) % numOfPhilosopher)] != States.EATING && state[id] == States.HANGRY ){
+			state[id] = States.EATING;
+			notifyAll();
+		}
+
+
+	}
+
+	public synchronized void testTalking(int piTID){
+
+	}
+
 }
 
 // EOF

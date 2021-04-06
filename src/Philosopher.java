@@ -96,10 +96,12 @@ public class Philosopher extends BaseThread
 	{
 		for(int i = 0; i < DiningPhilosophers.DINING_STEPS; i++)
 		{
+			System.out.println("pickup"+getTID());
+
 			DiningPhilosophers.soMonitor.pickUp(getTID());
 
 			eat();
-
+			System.out.println("putdown"+getTID());
 			DiningPhilosophers.soMonitor.putDown(getTID());
 
 			think();
@@ -113,16 +115,16 @@ public class Philosopher extends BaseThread
 			// The decision is randomly made by choosing at random either True or False
 			Boolean[] randomValue = {true,false};
 			Boolean willTalk = randomValue[(int)(Math.random() * randomValue.length)];
-			if(willTalk)
-			{
+//			if(willTalk)
+//			{
 				// Some monitor ops down here...
 				// Checks if another philosopher is talking; if not will talk() otherwise will wait
-				DiningPhilosophers.soMonitor.requestTalk();
-				talk();
+//				DiningPhilosophers.soMonitor.requestTalk();
+//				talk();
 				// ...
 				//releases the monitor once finished talking
-				DiningPhilosophers.soMonitor.endTalk();
-			}
+//				DiningPhilosophers.soMonitor.endTalk();
+//			}
 			Thread.yield();
 		}
 	} // run()

@@ -5,18 +5,19 @@ import java.util.Scanner;
  *
  * @author Serguei A. Mokhov, mokhov@cs.concordia.ca
  */
-public class DiningPhilosophers
+public class DiningPhilosophers extends BaseThread
 {
 	/*
 	 * ------------
 	 * Data members
 	 * ------------
 	 */
+	public static int iPhilosophers;
 
 	/**
 	 * This default may be overridden from the command line
 	 */
-	public static final int DEFAULT_NUMBER_OF_PHILOSOPHERS = 4;
+	public static final int DEFAULT_NUMBER_OF_PHILOSOPHERS = 2;
 
 	/**
 	 * Dining "iterations" per philosopher thread
@@ -40,7 +41,7 @@ public class DiningPhilosophers
 	 */
 	public static void main(String[] argv)
 	{
-		int iPhilosophers=0;
+		iPhilosophers=0;
 		try
 		{
 			/*
@@ -48,17 +49,18 @@ public class DiningPhilosophers
 			 * Should be settable from the command line
 			 * or the default if no arguments supplied.
 			 */
-			Scanner scanner = new Scanner(System.in);
-			System.out.println("Enter the number of Philosophers: ");
-			String input = scanner.next();
-			int numPhilo = Integer.parseInt(input);
-			if(numPhilo<0)
-				System.out.println("negative number");
-			else if(numPhilo>0)
-				iPhilosophers = numPhilo;
-				else
-					iPhilosophers = DEFAULT_NUMBER_OF_PHILOSOPHERS;
+//			Scanner scanner = new Scanner(System.in);
+//			System.out.println("Enter the number of Philosophers: ");
+//			String input = scanner.next();
+//			int numPhilo = Integer.parseInt(input);
+//			if(numPhilo<0)
+//				System.out.println("negative number");
+//			else if(numPhilo>0)
+//				iPhilosophers = numPhilo;
+//				else
+//					iPhilosophers = DEFAULT_NUMBER_OF_PHILOSOPHERS;
 
+			iPhilosophers = DEFAULT_NUMBER_OF_PHILOSOPHERS;
 			// Make the monitor aware of how many philosophers there are
 			soMonitor = new Monitor(iPhilosophers);
 
