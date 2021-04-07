@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 /**
  * Class DiningPhilosophers
  * The main starter.
@@ -39,6 +41,12 @@ public class DiningPhilosophers
 	 */
 	public static void main(String[] argv)
 	{
+		Scanner reader = new Scanner(System.in);
+
+
+		System.out.print("Please enter the number of desired philosophers: ");
+		String input = reader.nextLine();
+		int iPhilosophers;
 		try
 		{
 			/*
@@ -46,8 +54,16 @@ public class DiningPhilosophers
 			 * Should be settable from the command line
 			 * or the default if no arguments supplied.
 			 */
-			int iPhilosophers = DEFAULT_NUMBER_OF_PHILOSOPHERS;
-
+			try {
+				iPhilosophers = Integer.parseInt(input);
+				if(iPhilosophers<1) {
+					System.out.println(input + " is not a valid positive integer. We will use default number of philosophers (i.e. 4).");
+					iPhilosophers = DEFAULT_NUMBER_OF_PHILOSOPHERS;
+				}
+			} catch(NumberFormatException e) {
+				System.out.println(input + " is not a valid positive integer. We will use default number of philosophers (i.e. 4).");
+				iPhilosophers = DEFAULT_NUMBER_OF_PHILOSOPHERS;
+			}
 			// Make the monitor aware of how many philosophers there are
 			soMonitor = new Monitor(iPhilosophers);
 
