@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 /**
  * Class DiningPhilosophers
@@ -5,7 +6,7 @@ import java.util.Scanner;
  *
  * @author Serguei A. Mokhov, mokhov@cs.concordia.ca
  */
-public class DiningPhilosophers extends BaseThread
+public class DiningPhilosophers
 {
 	/*
 	 * ------------
@@ -17,7 +18,7 @@ public class DiningPhilosophers extends BaseThread
 	/**
 	 * This default may be overridden from the command line
 	 */
-	public static final int DEFAULT_NUMBER_OF_PHILOSOPHERS = 2;
+	public static final int DEFAULT_NUMBER_OF_PHILOSOPHERS = 4;
 
 	/**
 	 * Dining "iterations" per philosopher thread
@@ -41,26 +42,34 @@ public class DiningPhilosophers extends BaseThread
 	 */
 	public static void main(String[] argv)
 	{
+		/*
+		 * TODO:
+		 * Should be settable from the command line
+		 * or the default if no arguments supplied.
+		 */
+		// The user chooses the number of philosophers wanted for the dinning philosopher problem. the default value of 4 is used if the input
+		// is not a positive integer or not an integer at all
 		iPhilosophers=0;
+		int numOfPhilo;
+		Scanner scanner = new Scanner(System.in);
+		System.out.print("Enter the number of Philosophers: ");
+		String input = scanner.nextLine();
 		try
 		{
-			/*
-			 * TODO:
-			 * Should be settable from the command line
-			 * or the default if no arguments supplied.
-			 */
-//			Scanner scanner = new Scanner(System.in);
-//			System.out.println("Enter the number of Philosophers: ");
-//			String input = scanner.next();
-//			int numPhilo = Integer.parseInt(input);
-//			if(numPhilo<0)
-//				System.out.println("negative number");
-//			else if(numPhilo>0)
-//				iPhilosophers = numPhilo;
-//				else
-//					iPhilosophers = DEFAULT_NUMBER_OF_PHILOSOPHERS;
 
-			iPhilosophers = DEFAULT_NUMBER_OF_PHILOSOPHERS;
+			try {
+				numOfPhilo = Integer.parseInt(input);
+				if (numOfPhilo <= 0) {
+					System.out.println("This is not a positive integer:" + input + "\n will use the default number of 4");
+					iPhilosophers = DEFAULT_NUMBER_OF_PHILOSOPHERS;
+				} else
+					iPhilosophers = numOfPhilo;
+			}catch (NumberFormatException e){
+				System.out.println("The default value will be used as the entered input is not in the proper number format. value entered:"+input);
+				iPhilosophers = DEFAULT_NUMBER_OF_PHILOSOPHERS;
+			}
+
+
 			// Make the monitor aware of how many philosophers there are
 			soMonitor = new Monitor(iPhilosophers);
 

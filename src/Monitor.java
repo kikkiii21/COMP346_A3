@@ -1,7 +1,5 @@
 import java.util.Arrays;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+
 
 /**
  * Class Monitor
@@ -19,13 +17,9 @@ public class Monitor
 	//attributes
 	enum States{EATING,THINKING,HANGRY};
 	States[] state;
-	Boolean someoneTalking =false;
-	int numOfPhilosopher=0;
+	static Boolean talkingTurn;
+	int numOfChopsticks =0;
 
-	//conditions
-//	Lock lock = new ReentrantLock();
-//	Condition[] self;
-	//methods, see below
 
 	/**
 	 * Constructor
@@ -34,19 +28,14 @@ public class Monitor
 	{
 		// TODO: set appropriate number of chopsticks based on the # of philosophers
 		// same amount of chopsticks as philosophers
-
+		numOfChopsticks = piNumberOfPhilosophers;
+		// using the state of a philosopher to determine if a particular philosopher can eat based on the state of its neighbors.
 		state = new States[piNumberOfPhilosophers];
-		//self = new Condition[piNumberOfPhilosophers];
-		numOfPhilosopher = piNumberOfPhilosophers;
-		//initialize chopsticks to true as they are all available at the start of dinner
 		for(int i =0;i<piNumberOfPhilosophers;i++){
 			state[i] = States.THINKING;
-			//self[i] =lock.newCondition();
 		}
-
-		System.out.println(Arrays.toString(state));
-		//System.out.println(Arrays.toString(self));
-
+		// used to determine if a philosopher is currently talking and if it needs to wait for his turn
+		talkingTurn =true;
 	}
 
 	/*
@@ -61,18 +50,20 @@ public class Monitor
 	 */
 	public synchronized void pickUp(final int piTID)
 	{
-		// ...
-		//separate picking up of the chopsticks based on even/odd philosopher? For example even philo picks
-		// up the left chopstick first and then the right and vice versa for the odd philo
+		// Philosopher #1 is at index 0 in the state array therefore we identify the correct person with the id variable.
+		// The testChopsticks method checks the state values of the neighbors of the philosopher in question. If both neighbors
+		// are not in the EATING state, then the philosopher's state will change to EATING and will enter the eat method. Otherwise he will wait.
 
 		int id = piTID-1;
 		state[id] = States.HANGRY;
-		testChopsticks(piTID);
-		try {
-			if (state[id] != States.EATING) wait();
-		}catch(InterruptedException e){
-			System.err.println("Philosopher Pickup error");
-			DiningPhilosophers.reportException(e);
+		testChopsticks(id);
+		while (state[id] != States.EATING) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				System.err.println("Philosopher Pickup error");
+				DiningPhilosophers.reportException(e);
+			}
 		}
 	}
 
@@ -82,11 +73,13 @@ public class Monitor
 	 */
 	public synchronized void putDown(final int piTID)
 	{
-		// ...
+		// Philosopher #1 is at index 0 in the state array therefore we identify the correct person with the id variable.
+		// Once a philosopher is done with the eat method, its state is updated to THINKING
+		// TestChopsticks() method is used to notify the left and right neighbors if any are waiting
 		int id = piTID-1;
 		state[id] = States.THINKING;
-		testChopsticks((id+(numOfPhilosopher-1)) % numOfPhilosopher);
-		testChopsticks(id+1 % numOfPhilosopher);
+		testChopsticks((id+numOfChopsticks -1)% numOfChopsticks);
+		testChopsticks((id+1)% numOfChopsticks);
 
 	}
 
@@ -96,16 +89,19 @@ public class Monitor
 	 */
 	public synchronized void requestTalk()
 	{
-		// ...
-//		while(someoneTalking) {
-//			try {
-//					this.wait();
-//			} catch (InterruptedException e) {
-//				System.err.println("Someone talking error");
-//				DiningPhilosophers.reportException(e);
-//			}
-//		}
-//		someoneTalking =true;
+		// The first philosopher entering this method will be allowed to access the talk method as the talkingTurn boolean is True.
+		// Any subsequent philosopher will have to wait for the talkingTurn boolean to become True in the endTalk() method.
+
+		while(!talkingTurn) {
+			try {
+					wait();
+
+			} catch (InterruptedException e) {
+				System.err.println("Someone talking error");
+				DiningPhilosophers.reportException(e);
+			}
+		}
+		talkingTurn =false;
 	}
 
 	/**
@@ -114,26 +110,23 @@ public class Monitor
 	 */
 	public synchronized void endTalk()
 	{
-		// ...
-//		someoneTalking = false;
-//		this.notifyAll();
+		// Makes the talkingTurn boolean True in order for a philosopher that is waiting can enter the talk() method.
+		talkingTurn = true;
+		notifyAll();
 	}
 
-	public synchronized void testChopsticks(int piTID){
+	public synchronized void testChopsticks(int id)
+	{
+		// Checks the state status of the left and right neighbor of a philosopher and determines if the philosopher in question can eat.
+		// 3 conditions needs to be met in order for a philosopher to enter the eat() method.
+		// The state Eating implies that the neighbor is eating therefore the chopstick is not available.
+		// The philosopher in question needs to be in the state HUNGRY, the left and right chopsticks are available, meaning left and right neighbor are not in the EATING status
 
-		int id = piTID-1;
-		if( state[ ((id-1+numOfPhilosopher) % numOfPhilosopher)] != States.EATING && state[((id+1) % numOfPhilosopher)] != States.EATING && state[id] == States.HANGRY ){
+		if( state[ ((id+ numOfChopsticks -1) % numOfChopsticks)] != States.EATING && state[((id+1) % numOfChopsticks)] != States.EATING && state[id] == States.HANGRY ){
 			state[id] = States.EATING;
 			notifyAll();
 		}
-
-
 	}
-
-	public synchronized void testTalking(int piTID){
-
-	}
-
 }
 
 // EOF

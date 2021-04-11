@@ -1,5 +1,7 @@
 //import common.BaseThread;
 
+import java.util.Arrays;
+
 /**
  * Class Philosopher.
  * Outlines main subroutines of our virtual philosopher.
@@ -25,15 +27,12 @@ public class Philosopher extends BaseThread
 	{
 		try
 		{
-			// ...
-			//philosopher (TID) has started eating
+			// indicates what the philosopher is currently doing and corresponds to its state status
 			System.out.println("Philosopher #"+getTID()+" has started eating");
 			Thread.yield();
 			sleep((long)(Math.random() * TIME_TO_WASTE));
-			// ...
-			//yield
 			Thread.yield();
-			//done eating
+			// message done eating
 			System.out.println("Philosopher #"+ getTID()+" has finished eating");
 		}
 		catch(InterruptedException e)
@@ -54,7 +53,7 @@ public class Philosopher extends BaseThread
 	 */
 	public void think()
 	{
-		// ...
+		// indicates what the philosopher is currently doing and corresponds to its state status
 		try{
 		System.out.println("Philosopher #"+getTID()+" has started thinking");
 		Thread.yield();
@@ -79,14 +78,14 @@ public class Philosopher extends BaseThread
 	 */
 	public void talk()
 	{
-		// ...
+		// indicates what the philosopher is currently doing
 		System.out.println("Philosopher #"+getTID()+" has started talking");
 		Thread.yield();
 		saySomething();
 		Thread.yield();
 		System.out.println("Philosopher #"+getTID()+" is done talking");
 
-		// ...
+
 	}
 
 	/**
@@ -96,14 +95,13 @@ public class Philosopher extends BaseThread
 	{
 		for(int i = 0; i < DiningPhilosophers.DINING_STEPS; i++)
 		{
-			System.out.println("pickup"+getTID());
-
+			// Synchronizes the pickup() and putDown() methods to ensure that no two adjacent philosophers can
+			// enter the eat() method at the same time since there is a lack of chopsticks
 			DiningPhilosophers.soMonitor.pickUp(getTID());
-
 			eat();
-			System.out.println("putdown"+getTID());
 			DiningPhilosophers.soMonitor.putDown(getTID());
 
+			// no need to synchronize this method as there are no restrictions or conditions on who is allowed to access think()
 			think();
 
 			/*
@@ -115,17 +113,16 @@ public class Philosopher extends BaseThread
 			// The decision is randomly made by choosing at random either True or False
 			Boolean[] randomValue = {true,false};
 			Boolean willTalk = randomValue[(int)(Math.random() * randomValue.length)];
-//			if(willTalk)
-//			{
-				// Some monitor ops down here...
-				// Checks if another philosopher is talking; if not will talk() otherwise will wait
-//				DiningPhilosophers.soMonitor.requestTalk();
-//				talk();
-				// ...
-				//releases the monitor once finished talking
-//				DiningPhilosophers.soMonitor.endTalk();
-//			}
+
+			if(willTalk) {
+				//Checks if another philosopher is talking; if not will talk() otherwise will wait
+				//synchronizes the requestTalk() and endTalk() methods to ensure that only one philosopher can talk at a time
+				DiningPhilosophers.soMonitor.requestTalk();
+				talk();
+				DiningPhilosophers.soMonitor.endTalk();
+			}
 			Thread.yield();
+
 		}
 	} // run()
 
