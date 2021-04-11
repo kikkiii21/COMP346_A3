@@ -12,7 +12,6 @@ public class Philosopher extends BaseThread
 	 * Max time an action can take (in milliseconds)
 	 */
 	public static final long TIME_TO_WASTE = 1000;
-	public int ate = 0;
 	/**
 	 * The act of eating.
 	 * - Print the fact that a given phil (their TID) has started eating.
@@ -30,8 +29,9 @@ public class Philosopher extends BaseThread
 			Thread.yield();
 			sleep((long)(Math.random() * TIME_TO_WASTE));
 			// ...
-			System.out.println(getTID() + " has finished eating.");
 			Thread.yield();
+			System.out.println(getTID() + " has finished eating.");
+
 		}
 		catch(InterruptedException e)
 		{
@@ -59,8 +59,9 @@ public class Philosopher extends BaseThread
 			Thread.yield();
 			sleep((long)(Math.random() * TIME_TO_WASTE));
 			// ...
-			System.out.println(getTID() + " has finished thinking.");
 			Thread.yield();
+			System.out.println(getTID() + " has finished thinking.");
+
 		}
 		catch(InterruptedException e)
 		{
@@ -83,8 +84,9 @@ public class Philosopher extends BaseThread
 		System.out.println(getTID() + " has started talking.");
 		Thread.yield();
 		saySomething();
-		System.out.println(getTID() + " has finished talking.");
 		Thread.yield();
+		System.out.println(getTID() + " has finished talking.");
+
 	}
 
 	/**
@@ -109,7 +111,7 @@ public class Philosopher extends BaseThread
 			Boolean[] randomValue = {true,false};
 			Boolean talkative = randomValue[(int)(Math.random() * randomValue.length)];
 
-			if(true)
+			if(talkative)
 			{
 				DiningPhilosophers.soMonitor.requestTalk();
 
