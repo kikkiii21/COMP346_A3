@@ -14,13 +14,10 @@ public class Monitor
 	 * Data members
 	 * ------------
 	 */
-	//attributes
-	enum States{EATING,THINKING,HANGRY};
-	States[] state;
-	static Boolean talkingTurn;
-	int numOfChopsticks =0;
-
-
+	private enum States{EATING,THINKING,HANGRY};
+	private States[] state;
+	private Boolean talkingTurn;
+	private final int numOfChopsticks;
 	/**
 	 * Constructor
 	 */
@@ -54,10 +51,10 @@ public class Monitor
 		// The testChopsticks method checks the state values of the neighbors of the philosopher in question. If both neighbors
 		// are not in the EATING state, then the philosopher's state will change to EATING and will enter the eat method. Otherwise he will wait.
 
-		int id = piTID-1;
-		state[id] = States.HANGRY;
-		testChopsticks(id);
-		while (state[id] != States.EATING) {
+		int index = piTID-1;
+		state[index] = States.HANGRY;
+		testChopsticks(index);
+		while (state[index] != States.EATING) {
 			try {
 				wait();
 			} catch (InterruptedException e) {
@@ -76,11 +73,10 @@ public class Monitor
 		// Philosopher #1 is at index 0 in the state array therefore we identify the correct person with the id variable.
 		// Once a philosopher is done with the eat method, its state is updated to THINKING
 		// TestChopsticks() method is used to notify the left and right neighbors if any are waiting
-		int id = piTID-1;
-		state[id] = States.THINKING;
-		testChopsticks((id+numOfChopsticks -1)% numOfChopsticks);
-		testChopsticks((id+1)% numOfChopsticks);
-
+		int index = piTID-1;
+		state[index] = States.THINKING;
+		testChopsticks((index+numOfChopsticks -1)% numOfChopsticks);
+		testChopsticks((index+1)% numOfChopsticks);
 	}
 
 	/**
@@ -91,7 +87,6 @@ public class Monitor
 	{
 		// The first philosopher entering this method will be allowed to access the talk method as the talkingTurn boolean is True.
 		// Any subsequent philosopher will have to wait for the talkingTurn boolean to become True in the endTalk() method.
-
 		while(!talkingTurn) {
 			try {
 					wait();
@@ -101,7 +96,7 @@ public class Monitor
 				DiningPhilosophers.reportException(e);
 			}
 		}
-		talkingTurn =false;
+		talkingTurn = false;
 	}
 
 	/**
@@ -115,15 +110,16 @@ public class Monitor
 		notifyAll();
 	}
 
-	public synchronized void testChopsticks(int id)
+	public synchronized void testChopsticks(int index)
 	{
 		// Checks the state status of the left and right neighbor of a philosopher and determines if the philosopher in question can eat.
 		// 3 conditions needs to be met in order for a philosopher to enter the eat() method.
 		// The state Eating implies that the neighbor is eating therefore the chopstick is not available.
 		// The philosopher in question needs to be in the state HUNGRY, the left and right chopsticks are available, meaning left and right neighbor are not in the EATING status
-
-		if( state[ ((id+ numOfChopsticks -1) % numOfChopsticks)] != States.EATING && state[((id+1) % numOfChopsticks)] != States.EATING && state[id] == States.HANGRY ){
-			state[id] = States.EATING;
+		if(state[(index+numOfChopsticks-1) % numOfChopsticks] != States.EATING
+				&& state[(index+1) % numOfChopsticks] != States.EATING
+				&& state[index] == States.HANGRY){
+			state[index] = States.EATING;
 			notifyAll();
 		}
 	}

@@ -14,18 +14,15 @@ public class DiningPhilosophers
 	 * ------------
 	 */
 	public static int iPhilosophers;
-
 	/**
 	 * This default may be overridden from the command line
 	 */
 	public static final int DEFAULT_NUMBER_OF_PHILOSOPHERS = 4;
-
 	/**
 	 * Dining "iterations" per philosopher thread
 	 * while they are socializing there
 	 */
 	public static final int DINING_STEPS = 10;
-
 	/**
 	 * Our shared monitor for the philosphers to consult
 	 */

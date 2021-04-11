@@ -14,7 +14,6 @@ public class Philosopher extends BaseThread
 	 * Max time an action can take (in milliseconds)
 	 */
 	public static final long TIME_TO_WASTE = 1000;
-
 	/**
 	 * The act of eating.
 	 * - Print the fact that a given phil (their TID) has started eating.
@@ -112,9 +111,9 @@ public class Philosopher extends BaseThread
 
 			// The decision is randomly made by choosing at random either True or False
 			Boolean[] randomValue = {true,false};
-			Boolean willTalk = randomValue[(int)(Math.random() * randomValue.length)];
+			Boolean wantsToTalk = randomValue[(int)(Math.random() * randomValue.length)];
 
-			if(willTalk) {
+			if(wantsToTalk) {
 				//Checks if another philosopher is talking; if not will talk() otherwise will wait
 				//synchronizes the requestTalk() and endTalk() methods to ensure that only one philosopher can talk at a time
 				DiningPhilosophers.soMonitor.requestTalk();
